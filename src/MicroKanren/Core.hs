@@ -13,14 +13,14 @@ walk u _ = u
 extS :: forall t t1. t -> t1 -> [(t, t1)] -> [(t, t1)]
 extS x v = (:) (x, v)
 
-(===) :: forall t.Var -> Var -> ([(Var, Var)], t) -> [([(Var, Var)], t)]
+(===) :: Var -> Var -> ([(Var, Var)], t) -> [([(Var, Var)], t)]
 (===) u v sc = let s = unify u v (fst sc) in
   if isJust s then unit (fromJust s, snd sc) else mzero
 
-mzero :: forall a. [a]
+mzero :: [a]
 mzero = []
 
-unit :: forall a. a -> [a]
+unit :: a -> [a]
 unit  = flip (:) mzero
 
 unify :: Var -> Var -> [(Var, Var)] -> Maybe [(Var, Var)]
@@ -37,17 +37,17 @@ unify u v s =
         | otherwise = Nothing
    in pat u' v' s
 
-callFresh :: forall t t1.(Var -> (t1, Integer) -> t) -> (t1, Integer) -> t
+callFresh :: (Var -> (a, Integer) -> b) -> (a, Integer) -> b
 callFresh f sc = let c = snd sc in f (Var c) (fst sc, c+1)
 
-disj :: forall a t. (t -> [a]) -> (t -> [a]) -> t -> [a]
+disj :: (a -> [b]) -> (a -> [b]) -> a -> [b]
 disj g1 g2 sc = mplus (g1 sc) (g2 sc)
 
-conj :: forall a a1 t. (t -> [a1]) -> (a1 -> [a]) -> t -> [a]
+conj :: (a -> [b]) -> (b -> [c]) -> a -> [c]
 conj g1 g2 sc = bind  (g1 sc)  g2
 
-mplus :: forall a. [a] -> [a] -> [a]
+mplus :: [a] -> [a] -> [a]
 mplus s1 s2 = if null s1 then s2 else head s1 : mplus s2 (tail s1)
 
-bind :: forall a a1. [a1] -> (a1 -> [a]) -> [a]
+bind :: [a] -> (a -> [b]) -> [b]
 bind s g = if null s then mzero else mplus (g $ head s) (bind (tail s) g)
