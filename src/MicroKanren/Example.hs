@@ -18,10 +18,16 @@ runFives = callFresh fives emptyS
 sixes x = disj (x === Val "6") (sixes x)
 fivesAndSixes = callFresh (\x -> disj (fives x) (sixes x))
 
---appendo l s out = disj
---  (conj (l === "") (s === out))
---  callFresh (\a ->
---    callFresh (\d ->
---      conj ()))
-
 -- https://github.com/jasonhemann/microKanren/blob/master/microKanren-test.scm
+
+--appendo l s out =
+--  disj
+--    (conj (l === []) (s === out))
+--    (callFresh (\a ->
+--        callFresh (\d ->
+--          conj
+--            ((a:d) === l)
+--            (callFresh (\res →
+--              (conj
+--                ((a:res) === out)
+--                ((\sc → (appendo d s res) sc))))))))

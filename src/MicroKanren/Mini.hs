@@ -2,14 +2,14 @@ module MicroKanren.Mini where
 
 import MicroKanren.Core
 
-fresh :: a
+fresh ∷ a
 fresh = undefined
 
-conde :: a
+conde ∷ a
 conde = undefined
 
-run :: Int -> [a] -> [a]
+run ∷ Int -> [a] -> [a]
 run = take
 
-runAll :: [a] -> [a]
+runAll ∷ [a] -> [a]
 runAll = id

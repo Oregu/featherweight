@@ -3,27 +3,27 @@ module MicroKanren.Core where
 import Data.Maybe (isJust, fromJust)
 import Data.List  (find)
 
-data Var = Var Integer | Val String deriving (Eq, Show)
+data Var a = Var Integer | Val a deriving (Eq, Show)
 
-walk :: Var -> [(Var, Var)] -> Var
-walk u@(Var _) s = let pr = find (\v -> u == fst v) s in
+walk ∷ Eq a ⇒ Var a → [(Var a, Var a)] → Var a
+walk u@(Var _) s = let pr = find (\v → u == fst v) s in
   if isJust pr then walk (snd $ fromJust pr) s else u
 walk u _ = u
 
-extS :: forall t t1. t -> t1 -> [(t, t1)] -> [(t, t1)]
+extS ∷ forall t t1. t → t1 → [(t, t1)] → [(t, t1)]
 extS x v = (:) (x, v)
 
-(===) :: Var -> Var -> ([(Var, Var)], t) -> [([(Var, Var)], t)]
+(===) ∷ Eq a ⇒ Var a → Var a → ([(Var a, Var a)], t) → [([(Var a, Var a)], t)]
 (===) u v sc = let s = unify u v (fst sc) in
   if isJust s then unit (fromJust s, snd sc) else mzero
 
-mzero :: [a]
+mzero ∷ [a]
 mzero = []
 
-unit :: a -> [a]
+unit ∷ a → [a]
 unit  = flip (:) mzero
 
-unify :: Var -> Var -> [(Var, Var)] -> Maybe [(Var, Var)]
+unify ∷ Eq a ⇒ Var a → Var a → [(Var a, Var a)] → Maybe [(Var a, Var a)]
 unify u v s =
   let u' = walk u s
       v' = walk v s
@@ -37,17 +37,17 @@ unify u v s =
         | otherwise = Nothing
    in pat u' v' s
 
-callFresh :: (Var -> (a, Integer) -> b) -> (a, Integer) -> b
+callFresh ∷ (Var c → (a, Integer) → b) → (a, Integer) → b
 callFresh f sc = let c = snd sc in f (Var c) (fst sc, c+1)
 
-disj :: (a -> [b]) -> (a -> [b]) -> a -> [b]
+disj ∷ (a → [b]) → (a → [b]) → a → [b]
 disj g1 g2 sc = mplus (g1 sc) (g2 sc)
 
-conj :: (a -> [b]) -> (b -> [c]) -> a -> [c]
+conj ∷ (a → [b]) → (b → [c]) → a → [c]
 conj g1 g2 sc = bind  (g1 sc)  g2
 
-mplus :: [a] -> [a] -> [a]
+mplus ∷ [a] → [a] → [a]
 mplus s1 s2 = if null s1 then s2 else head s1 : mplus s2 (tail s1)
 
-bind :: [a] -> (a -> [b]) -> [b]
+bind ∷ [a] → (a → [b]) → [b]
 bind s g = if null s then mzero else mplus (g $ head s) (bind (tail s) g)
