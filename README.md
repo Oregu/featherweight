@@ -8,7 +8,7 @@ Original Scheme implementation: https://github.com/jasonhemann/microKanren
 
 To do
 -----
-- [ ] Need more monads
+- [ ] Need moar monads
 - [ ] Tests
 - [ ] Implement appendo
 - [ ] Use Map for substitutions
