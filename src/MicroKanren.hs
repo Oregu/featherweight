@@ -11,7 +11,7 @@ walk u@(Var _) s = let pr = find (\v → u == fst v) s in
   if isJust pr then walk (snd $ fromJust pr) s else u
 walk u _ = u
 
-extS ∷ forall t t1. t → t1 → [(t, t1)] → [(t, t1)]
+extS ∷ Var a → Var a → [Subst a] → [Subst a]
 extS x v = (:) (x, v)
 
 (===) ∷ Eq a ⇒ Var a → Var a → ([Subst a], t) → [([Subst a], t)]
