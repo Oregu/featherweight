@@ -12,3 +12,4 @@ To do
 - [ ] Tests
 - [ ] Implement appendo
 - [ ] Use Map for substitutions
+- [ ] Finish Micro/Mini module with miniKanren things
