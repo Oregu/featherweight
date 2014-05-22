@@ -1,6 +1,6 @@
 module MicroKanren.Example where
 
-import MicroKanren.Core
+import MicroKanren
 
 emptyS ∷ ([Subst a], Integer)
 emptyS = ([], 0)

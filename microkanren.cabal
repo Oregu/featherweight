@@ -19,7 +19,6 @@ tested-with:         GHC
 library
   exposed-modules:
     MicroKanren
-    MicroKanren.Core
     MicroKanren.Mini
 
   other-modules:

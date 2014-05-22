@@ -1,6 +1,6 @@
 module MicroKanren.Mini where
 
-import MicroKanren.Core
+--import MicroKanren
 
 fresh ∷ a
 fresh = undefined
