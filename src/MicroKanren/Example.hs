@@ -24,14 +24,19 @@ fivesAndSixes = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 
 -- https://github.com/jasonhemann/microKanren/blob/master/microKanren-test.scm
 
+--data Cons a = Nil | Cons (Var a) (Cons a) deriving (Eq, Show)
+--
+--appendo ∷ Eq a ⇒ Var (Cons a) → Var (Cons a) → Var (Cons a) → ([Subst (Cons a)], Integer) -> [([Subst (Cons a)], Integer)]
 --appendo l s out =
 --  disj
---    (conj (l === []) (s === out))
+--    (conj (l === Val Nil) (s === out))
 --    (callFresh (\a ->
 --        callFresh (\d ->
 --          conj
---            ((a:d) === l)
+--            (l === Val Nil) -- Cons a d
 --            (callFresh (\res →
 --              (conj
---                ((a:res) === out)
+--                (out === Val Nil) -- $ Cons a res
 --                ((\sc → (appendo d s res) sc))))))))
+--
+--testAppendo = callFresh (\q → appendo q (Val $ Cons 1 Nil) (Val Nil)) emptyS

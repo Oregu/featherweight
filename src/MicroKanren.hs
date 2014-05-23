@@ -28,13 +28,12 @@ unify ∷ Eq a ⇒ Var a → Var a → [Subst a] → Maybe [Subst a]
 unify u v s =
   let u' = walk u s
       v' = walk v s
-      pat u2@(Var _) v2@(Var _) s2
-        | u2 == v2    = Just s2
-        | otherwise = Just $ extS u2 v2 s2
-      pat u2@(Var _) v2 s2 = Just $ extS u2 v2 s2
-      pat u2 v2@(Var _) s2 = Just $ extS v2 u2 s2
-      pat u2 v2 s2 = if u2 == v2 then Just s2 else Nothing
-   in pat u' v' s
+      unify' u2@(Var _) v2@(Var _) s2 = Just $ if u2 == v2 then s2
+                                                           else extS u2 v2 s2
+      unify' u2@(Var _) v2 s2 = Just $ extS u2 v2 s2
+      unify' u2 v2@(Var _) s2 = Just $ extS v2 u2 s2
+      unify' u2 v2 s2 = if u2 == v2 then Just s2 else Nothing
+   in unify' u' v' s
 
 callFresh ∷ (Var c → (a, Integer) → b) → (a, Integer) → b
 callFresh f sc = let c = snd sc in f (Var c) (fst sc, c+1)
