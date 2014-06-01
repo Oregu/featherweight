@@ -32,18 +32,18 @@ instance Show a ⇒ Show (Cons a) where
 runCons ∷ [SC (Cons Integer)]
 runCons = callFresh (\x -> disj (x === Val (Cons (Val 2) (Val Nil))) (x === Val Nil)) emptyS
 
---appendo ∷ Var (Cons Integer) → Var (Cons Integer) → Var (Cons Integer) → Goal (Cons Integer)
---appendo l s out =
---  disj
---    (conj (l === Val Nil) (s === out))
---    (callFresh (\h →
---        callFresh (\t →
---          conj
---            (l === Val (Cons h t))
---            (callFresh (\res →
---              (conj
---                (out === Val (Cons h res))
---                (appendo t s res)))))))
+appendo ∷ Eq a ⇒ Var (Cons a) → Var (Cons a) → Var (Cons a) → Goal (Cons a)
+appendo l s out =
+  disj
+    (conj (l === Val Nil) (s === out))
+    (callFresh (\h →
+        callFresh (\t →
+          conj
+            (l === Val (Cons h t))
+            (callFresh (\res →
+              conj
+                (out === Val (Cons h res))
+                (appendo t s res))))))
 
---testAppendo ∷ [SC (Cons Integer)]
---testAppendo = callFresh (\q → appendo q (Val $ Cons (Val 1) (Val Nil)) (Val Nil)) emptyS
+testAppendo ∷ [SC (Cons Integer)]
+testAppendo = callFresh (\q → appendo (Val (Cons (Val 1) (Val Nil))) (Val Nil) q) emptyS

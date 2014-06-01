@@ -41,7 +41,7 @@ unify u v s =
       unify' u2 v2 s2 = if u2 == v2 then Just s2 else Nothing
    in unify' u' v' s
 
-callFresh ∷ (Var a → Goal a) → Goal a
+callFresh ∷ (Var a → Goal b) → Goal b
 callFresh f sc = let c = snd sc in f (Var c) (fst sc, c+1)
 
 disj ∷ Goal a → Goal a → Goal a
