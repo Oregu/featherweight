@@ -19,10 +19,12 @@ tested-with:         GHC
 library
   exposed-modules:
     MicroKanren
+--    MicroKanren.Monad
     MicroKanren.Mini
 
   other-modules:
     MicroKanren.Example
+--    MicroKanren.ExampleMonadic
 
   build-depends:       base ==4.6.*
   hs-source-dirs:      src

@@ -2,23 +2,23 @@ module MicroKanren.Example where
 
 import MicroKanren
 
-emptyS ∷ ([Subst a], Integer)
+emptyS ∷ SC a
 emptyS = ([], 0)
 
-aANDb ∷ ([Subst Integer], Integer) → [([Subst Integer], Integer)]
+aANDb ∷ SC Integer → [SC Integer]
 aANDb = conj
   (callFresh (\a -> a === Val 7))
   (callFresh (\b -> disj (b === Val 5) (b === Val 6)))
 
-ex1, ex2 ∷ [([Subst Integer], Integer)]
+ex1, ex2 ∷ [SC Integer]
 ex1 = callFresh (\q -> q === Val 5) emptyS
 ex2 = aANDb emptyS
 
-fives, sixes ∷ Var Integer -> ([Subst Integer], Integer) -> [([Subst Integer], Integer)]
+fives, sixes ∷ Var Integer -> SC Integer -> [SC Integer]
 fives x = disj (x === Val 5) (fives x)
 sixes x = disj (x === Val 6) (sixes x)
 
-runFives, fivesAndSixes ∷ [([Subst Integer], Integer)]
+runFives, fivesAndSixes ∷ [SC Integer]
 runFives = callFresh fives emptyS
 fivesAndSixes = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 
