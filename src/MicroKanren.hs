@@ -3,9 +3,12 @@ module MicroKanren where
 import Data.Maybe (isJust, fromJust)
 import Data.List  (find)
 
-data Var a = Var Integer | Val a deriving (Eq, Show)
-type Subst a = (Var a, Var a)
+data Var a = Var Integer | Val a deriving (Eq)
+instance Show a ⇒ Show (Var a) where
+  show (Var i) = "_" ++ show i
+  show (Val a) = show a
 
+type Subst a = (Var a, Var a)
 type SC a = ([Subst a], Integer)
 type Goal a = SC a → [SC a]
 
