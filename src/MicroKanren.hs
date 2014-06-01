@@ -5,8 +5,9 @@ import Data.List  (find)
 
 data Var a = Var Integer | Val a deriving (Eq, Show)
 type Subst a = (Var a, Var a)
-type Goal a = a → [a]
-type SC a = ([Subst Integer], Integer)
+
+type SC a = ([Subst a], Integer)
+type Goal a = SC a → [SC a]
 
 walk ∷ Eq a ⇒ Var a → [Subst a] → Var a
 walk u@(Var _) s = let pr = find (\v → u == fst v) s in
@@ -44,10 +45,10 @@ disj ∷ Goal a → Goal a → Goal a
 disj g1 g2 sc = mplus (g1 sc) (g2 sc)
 
 conj ∷ Goal a → Goal a → Goal a
-conj g1 g2 sc = bind  (g1 sc)  g2
+conj g1 g2 sc = bind (g1 sc) g2
 
 mplus ∷ [a] → [a] → [a]
 mplus s1 s2 = if null s1 then s2 else head s1 : mplus s2 (tail s1)
 
-bind ∷ [a] → Goal a → [a]
+bind ∷ [SC a] → Goal a → [SC a]
 bind s g = if null s then mzero else mplus (g $ head s) (bind (tail s) g)
