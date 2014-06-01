@@ -38,7 +38,7 @@ unify u v s =
       unify' u2 v2 s2 = if u2 == v2 then Just s2 else Nothing
    in unify' u' v' s
 
-callFresh ∷ (Var c → (a, Integer) → b) → (a, Integer) → b
+callFresh ∷ (Var a → SC a → [SC a]) → SC a → [SC a]
 callFresh f sc = let c = snd sc in f (Var c) (fst sc, c+1)
 
 disj ∷ Goal a → Goal a → Goal a
@@ -47,7 +47,7 @@ disj g1 g2 sc = mplus (g1 sc) (g2 sc)
 conj ∷ Goal a → Goal a → Goal a
 conj g1 g2 sc = bind (g1 sc) g2
 
-mplus ∷ [a] → [a] → [a]
+mplus ∷ [SC a] → [SC a] → [SC a]
 mplus s1 s2 = if null s1 then s2 else head s1 : mplus s2 (tail s1)
 
 bind ∷ [SC a] → Goal a → [SC a]
