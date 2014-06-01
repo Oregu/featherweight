@@ -8,8 +8,8 @@ Original Scheme implementation: https://github.com/jasonhemann/microKanren
 
 To do
 -----
+- [ ] Implement appendo, Cons is not unifiable
 - [ ] Need moar monads
 - [ ] Tests
-- [ ] Implement appendo
 - [ ] Use Map for substitutions
 - [ ] Finish Micro/Mini module with miniKanren things
