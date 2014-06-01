@@ -17,14 +17,14 @@ walk u _ = u
 extS ∷ Var a → Var a → [Subst a] → [Subst a]
 extS x v = (:) (x, v)
 
-(===) ∷ Eq a ⇒ Var a → Var a → ([Subst a], t) → [([Subst a], t)]
+(===) ∷ Eq a ⇒ Var a → Var a → Goal a
 (===) u v sc = let s = unify u v (fst sc) in
   if isJust s then unit (fromJust s, snd sc) else mzero
 
-mzero ∷ [a]
+mzero ∷ [SC a]
 mzero = []
 
-unit ∷ a → [a]
+unit ∷ SC a → [SC a]
 unit = flip (:) mzero
 
 unify ∷ Eq a ⇒ Var a → Var a → [Subst a] → Maybe [Subst a]
@@ -38,7 +38,7 @@ unify u v s =
       unify' u2 v2 s2 = if u2 == v2 then Just s2 else Nothing
    in unify' u' v' s
 
-callFresh ∷ (Var a → SC a → [SC a]) → SC a → [SC a]
+callFresh ∷ (Var a → Goal a) → Goal a
 callFresh f sc = let c = snd sc in f (Var c) (fst sc, c+1)
 
 disj ∷ Goal a → Goal a → Goal a
