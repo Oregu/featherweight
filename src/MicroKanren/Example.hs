@@ -7,43 +7,36 @@ emptyS = ([], 0)
 
 aANDb ∷ Goal Integer
 aANDb = conj
-  (callFresh (\a -> a === Val 7))
-  (callFresh (\b -> disj (b === Val 5) (b === Val 6)))
+  (callFresh (\a -> a === LVal 7))
+  (callFresh (\b -> disj (b === LVal 5) (b === LVal 6)))
 
 ex1, ex2 ∷ [SC Integer]
-ex1 = callFresh (\q -> q === Val 5) emptyS
+ex1 = callFresh (\q -> q === LVal 5) emptyS
 ex2 = aANDb emptyS
 
 fives, sixes ∷ Var Integer -> Goal Integer
-fives x = disj (x === Val 5) (fives x)
-sixes x = disj (x === Val 6) (sixes x)
+fives x = disj (x === LVal 5) (fives x)
+sixes x = disj (x === LVal 6) (sixes x)
 
-runFives, fivesAndSixes ∷ [SC Integer]
+runFives, run5and6 ∷ [SC Integer]
 runFives = callFresh fives emptyS
-fivesAndSixes = callFresh (\x -> disj (fives x) (sixes x)) emptyS
+run5and6 = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 
--- https://github.com/jasonhemann/microKanren/blob/master/microKanren-test.scm
+runCons ∷ [SC (LCons Integer)]
+runCons = callFresh (\x -> disj (x === LVal (LCons (LVal 2) (LVal Nil))) (x === LVal Nil)) emptyS
 
-data Cons a = Nil | Cons (Var a) (Var (Cons a)) deriving (Eq)
-instance Show a ⇒ Show (Cons a) where
-  show Nil = "[]"
-  show (Cons h t) = show h ++ ":" ++ show t
-
-runCons ∷ [SC (Cons Integer)]
-runCons = callFresh (\x -> disj (x === Val (Cons (Val 2) (Val Nil))) (x === Val Nil)) emptyS
-
-appendo ∷ Eq a ⇒ Var (Cons a) → Var (Cons a) → Var (Cons a) → Goal (Cons a)
+appendo ∷ Eq a ⇒ Var (LCons a) → Var (LCons a) → Var (LCons a) → Goal (LCons a)
 appendo l s out =
   disj
-    (conj (l === Val Nil) (s === out))
+    (conj (l === LVal Nil) (s === out))
     (callFresh (\h →
         callFresh (\t →
           conj
-            (l === Val (Cons h t))
+            (l === LVal (LCons h t))
             (callFresh (\res →
               conj
-                (out === Val (Cons h res))
+                (out === LVal (LCons h res))
                 (appendo t s res))))))
 
-testAppendo ∷ [SC (Cons Integer)]
-testAppendo = callFresh (\q → appendo (Val (Cons (Val 1) (Val Nil))) (Val Nil) q) emptyS
+runAppendo ∷ [SC (LCons Integer)]
+runAppendo = callFresh (\q → appendo (LVal (LCons (LVal 1) (LVal Nil))) (LVal Nil) q) emptyS
