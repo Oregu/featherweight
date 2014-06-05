@@ -14,7 +14,7 @@ ex1, ex2 ∷ [SC Integer]
 ex1 = callFresh (\q -> q === LVal 5) emptyS
 ex2 = aANDb emptyS
 
-fives, sixes ∷ Var Integer -> Goal Integer
+fives, sixes ∷ LVar Integer -> Goal Integer
 fives x = disj (x === LVal 5) (fives x)
 sixes x = disj (x === LVal 6) (sixes x)
 
@@ -23,9 +23,9 @@ runFives = callFresh fives emptyS
 run5and6 = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 
 runCons ∷ [SC (LCons Integer)]
-runCons = callFresh (\x -> disj (x === LVal (LCons (LVal 2) (LVal Nil))) (x === LVal Nil)) emptyS
+runCons = callFresh (\x -> disj (x === LVal (LCons (LVal (LCell 2)) (LVal Nil))) (x === LVal Nil)) emptyS
 
-appendo ∷ Eq a ⇒ Var (LCons a) → Var (LCons a) → Var (LCons a) → Goal (LCons a)
+appendo ∷ Eq a ⇒ LVar (LCons a) → LVar (LCons a) → LVar (LCons a) → Goal (LCons a)
 appendo l s out =
   disj
     (conj (l === LVal Nil) (s === out))
@@ -39,4 +39,4 @@ appendo l s out =
                 (appendo t s res))))))
 
 runAppendo ∷ [SC (LCons Integer)]
-runAppendo = callFresh (\q → appendo (LVal (LCons (LVal 1) (LVal Nil))) (LVal Nil) q) emptyS
+runAppendo = callFresh (\q → appendo (LVal (LCons (LVal (LCell 1)) (LVal Nil))) (LVal Nil) q) emptyS

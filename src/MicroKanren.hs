@@ -20,12 +20,12 @@ class Eq α ⇒ CanUnify α where
 instance CanUnify Integer
 
 data LCons a = Nil
-             | LCons (LVar a) (LVar (LCons a)) deriving (Eq, Show)
+             | LCell a
+             | LCons (LVar (LCons a)) (LVar (LCons a)) deriving (Eq, Show)
 
 instance (Eq a) ⇒ CanUnify (LCons a) where
-  unifyTerm (LCons u us) (LCons v vs) s =
-    let s' = unify u v s
-     in if isJust s' then unify us vs s' else Nothing
+  unifyTerm (LCons u us) (LCons v vs) s = unify u v s >>= unify us vs
+  unifyTerm u v s = if u == v then Just s else Nothing
   unifyTerm _ _ _ = Nothing
 
 
