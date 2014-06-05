@@ -49,4 +49,4 @@ runAppendo2 ∷ [SC (LCons Integer)]
 runAppendo2 = callFresh (\q →
   appendo
     q q
-    (LVal (LCons (LVal (LCell 2)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))) emptyS
+    (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))) emptyS

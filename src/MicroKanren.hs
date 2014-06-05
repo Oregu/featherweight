@@ -1,6 +1,5 @@
 module MicroKanren where
 
-import Data.Maybe (isJust, fromJust)
 import Data.List  (find)
 
 data LVar a = LVar Integer | LVal a deriving (Eq)
@@ -29,16 +28,14 @@ instance (Eq α) ⇒ CanUnify (LCons α) where
 
 
 walk ∷ Eq α ⇒ LVar α → [Subst α] → LVar α
-walk u@(LVar _) s = let pr = find (\v → u == fst v) s in
-  if isJust pr then walk (snd $ fromJust pr) s else u
+walk u@(LVar _) s = maybe u (\pr' → walk (snd pr') s) (find (\v → u == fst v) s)
 walk u _ = u
 
 extS ∷ LVar α → LVar α → [Subst α] → [Subst α]
 extS x v = (:) (x, v)
 
 (===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Goal α
-(===) u v sc = let s = unify u v (fst sc) in
-  if isJust s then unit (fromJust s, snd sc) else mzero
+(===) u v sc = maybe mzero (\s' → unit (s', snd sc)) (unify u v (fst sc))
 
 mzero ∷ [SC α]
 mzero = []
