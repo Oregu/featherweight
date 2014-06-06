@@ -2,7 +2,7 @@ module MicroKanren.ExampleMonadic where
 
 import Control.Monad
 
-import MicroKanren (Var(Var, Val), Subst)
+import MicroKanren (LVar(LVar, LVal), Subst)
 import MicroKanren.Monad
 
 emptyS ∷ (Logic a, Integer)

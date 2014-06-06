@@ -8,7 +8,7 @@ Original Scheme implementation: https://github.com/jasonhemann/microKanren
 
 To do
 -----
-- [ ] Implement appendo, Cons is not unifiable
+- [x] Implement appendo, custom unify
 - [ ] Need moar monads
 - [ ] Tests
 - [ ] Use Map for substitutions
