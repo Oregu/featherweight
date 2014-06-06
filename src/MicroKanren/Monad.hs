@@ -4,12 +4,12 @@ import Control.Monad
 
 import MicroKanren (LVar(LVar), CanUnify, Subst, unify)
 
-newtype Logic α = Logic { runLogic :: [SC α] }
+newtype Logic α = Logic { runLogic :: [α] }
 type SC α    = ([Subst α], Integer)
 type Goal α  = (SC α → Logic α)
 
 instance Monad Logic where
-  s >>= g = if null (runLogic s) then mzero else g (head (runLogic s)) `mplus` ((return $ tail (runLogic s)) >>= g)
+  Logic s >>= g = if null s then mzero else g (head s) `mplus` ((Logic $ tail s) >>= g)
   return = Logic . flip (:) (runLogic mzero)
 
 instance MonadPlus Logic where
@@ -20,8 +20,7 @@ extS ∷ LVar a → LVar a → [Subst a] → [Subst a]
 extS x v = (:) (x, v)
 
 (===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Goal α
-(===) u v sc = let s = unify u v (fst sc) in
-  maybe mzero (\s' → return (s', snd sc)) s
+(===) u v sc = maybe (Logic mzero) (\s → return (s, snd sc)) $ unify u v (fst sc)
 
 disj ∷ Goal a → Goal a → Goal a
 disj g1 g2 sc = g1 sc `mplus` g2 sc
