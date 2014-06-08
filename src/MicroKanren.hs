@@ -67,4 +67,4 @@ mplus ∷ [SC α] → [SC α] → [SC α]
 mplus s1 s2 = if null s1 then s2 else head s1 : mplus s2 (tail s1)
 
 bind ∷ [SC α] → Goal α → [SC α]
-bind s g = if null s then mzero else mplus (g $ head s) (bind (tail s) g)
+bind s g = concat $ map g s
