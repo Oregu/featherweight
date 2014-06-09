@@ -8,13 +8,13 @@ import MicroKanren.Monad
 emptyS ∷ SC α
 emptyS = (mzero, 0)
 
-aANDb ∷ Goal (LVar Integer)
-aANDb = do
-	a ← fresh
-	b ← fresh
-	a === LVal 7
-	mplus (b === LVal 5)
-	      (b === LVal 6)
+aANDb ∷ Goal (Integer)
+aANDb sc = do
+    a ← fresh
+    b ← fresh
+    (a === LVal 7) sc
+    (mplus ((b === LVal 5) sc)
+           ((b === LVal 6) sc))
 
 --runEx1, runEx2 ∷ Logic (SC (LVar Integer))
 --runEx1 = (fresh >>= (\q -> q === LVal 5)) emptyS
