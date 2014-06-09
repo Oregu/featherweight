@@ -26,6 +26,6 @@ library
     MicroKanren.Example
     MicroKanren.ExampleMonadic
 
-  build-depends:       base ==4.6.*
+  build-depends:       base ==4.7.*
   hs-source-dirs:      src
-  extensions:          UnicodeSyntax
+  extensions:          UnicodeSyntax, DeriveFunctor, GeneralizedNewtypeDeriving
