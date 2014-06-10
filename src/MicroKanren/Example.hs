@@ -2,7 +2,7 @@ module MicroKanren.Example where
 
 import MicroKanren
 
-emptyS ∷ SC a
+emptyS ∷ SC α
 emptyS = ([], 0)
 
 aANDb ∷ Goal Integer
@@ -25,7 +25,7 @@ run5and6 = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 runCons ∷ [SC (LCons Integer)]
 runCons = callFresh (\x -> disj (x === LVal (LCons (LVal (LCell 2)) (LVal Nil))) (x === LVal Nil)) emptyS
 
-appendo ∷ Eq a ⇒ LVar (LCons a) → LVar (LCons a) → LVar (LCons a) → Goal (LCons a)
+appendo ∷ Eq α ⇒ LVar (LCons α) → LVar (LCons α) → LVar (LCons α) → Goal (LCons α)
 appendo l s out =
   disj
     (conj (l === LVal Nil) (s === out))

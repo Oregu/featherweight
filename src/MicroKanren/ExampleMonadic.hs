@@ -1,6 +1,7 @@
 module MicroKanren.ExampleMonadic where
 
 import Control.Monad
+import Control.Monad.State.Lazy
 
 import MicroKanren (LVar(LVal))
 import MicroKanren.Monad
@@ -8,17 +9,22 @@ import MicroKanren.Monad
 emptyS ∷ SC α
 emptyS = (mzero, 0)
 
-aANDb ∷ Goal (Integer)
-aANDb sc = do
+aANDb ∷ Logic (LVar Integer)
+aANDb = do
     a ← fresh
     b ← fresh
-    (a === LVal 7) sc
-    (mplus ((b === LVal 5) sc)
-           ((b === LVal 6) sc))
+    (a === LVal 7)
+    (mplus (b === LVal 5)
+           (b === LVal 6))
 
---runEx1, runEx2 ∷ Logic (SC (LVar Integer))
---runEx1 = (fresh >>= (\q -> q === LVal 5)) emptyS
---runEx2 = aANDb emptyS
+run ∷ StateT (SC α) L α -> L (α, SC α)
+run g = runStateT g emptyS
+
+runEx1, runEx2 ∷ L (LVar Integer, SC (LVar Integer))
+runEx1 = run $ do
+    q ← fresh
+    (q === LVal 5) ∷ Logic (LVar Integer)
+runEx2 = run aANDb
 
 --fives, sixes ∷ LVar Integer -> Goal Integer
 --fives x = mplus (x === LVal 5) (fives x)
