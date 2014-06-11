@@ -1,5 +1,6 @@
 module MicroKanren where
 
+import Control.Monad
 import Data.List  (find)
 
 data LVar a = LVar Integer | LVal a deriving (Eq)
@@ -45,26 +46,14 @@ unify u v s = unify' u' v' s
     unify' u2         v2@(LVar _)  s2 = Just $ extS v2 u2 s2
     unify' (LVal u2)   (LVal v2)   s2 =   unifyTerm u2 v2 s2
 
-mzero ∷ [SC α]
-mzero = []
-
-unit ∷ SC α → [SC α]
-unit = flip (:) mzero
-
 (===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Goal α
-(===) u v sc = maybe mzero (\s' → unit (s', snd sc)) (unify u v (fst sc))
+(===) u v sc = maybe mzero (\s' → return (s', snd sc)) (unify u v (fst sc))
 
 callFresh ∷ (LVar α → Goal β) → Goal β
 callFresh f sc = let c = snd sc in f (LVar c) (fst sc, c+1)
-
-mplus ∷ [SC α] → [SC α] → [SC α]
-mplus s1 s2 = if null s1 then s2 else head s1 : mplus s2 (tail s1)
-
-bind ∷ [SC α] → Goal α → [SC α]
-bind s g = concat $ map g s
 
 disj ∷ Goal α → Goal α → Goal α
 disj g1 g2 sc = mplus (g1 sc) (g2 sc)
 
 conj ∷ Goal α → Goal α → Goal α
-conj g1 g2 sc = bind (g1 sc) g2
+conj g1 g2 sc = (g1 sc) >>= g2
