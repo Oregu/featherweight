@@ -9,8 +9,9 @@ Original Scheme implementation: https://github.com/jasonhemann/microKanren
 To do
 -----
 - [x] Implement appendo, custom unify
-- [ ] Need moar monads
-- [ ] Logic as a state monad
+- [x] Need moar monads
+- [x] Logic as a state monad
 - [ ] Tests
 - [ ] Use Map for substitutions
 - [ ] Finish Micro/Mini module with miniKanren things
+- [ ] Nominal
