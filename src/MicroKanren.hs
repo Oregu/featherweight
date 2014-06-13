@@ -27,8 +27,9 @@ instance (Eq α) ⇒ CanUnify (LCons α) where
   unifyTerm (LCons u us) (LCons v vs) s = unify u v s >>= unify us vs
   unifyTerm u v s = if u == v then Just s else Nothing
 
-fairMplus s1 s2 = if null s1 then s2 else head s1 : fairMplus s2 (tail s1)
 
+fairMplus ∷ [α] → [α] → [α]
+fairMplus s1 s2 = if null s1 then s2 else head s1 : fairMplus s2 (tail s1)
 
 walk ∷ Eq α ⇒ LVar α → [Subst α] → LVar α
 walk u@(LVar _) s = maybe u (\pr' → walk (snd pr') s) (find (\v → u == fst v) s)

@@ -18,7 +18,7 @@ aANDb = do
           (b === LVal 6)
 
 run ∷ Logic α → [SC α]
-run l = map snd $ runStateT l emptyS
+run l = map snd $ unFairList $ runStateT l emptyS
 
 runEx1, runEx2 ∷ [SC (LVar Integer)]
 runEx1 = run $ do
@@ -46,6 +46,7 @@ appendo l s out = mplus
         out === LVal (LCons h res)
         appendo t s res)
 
+runAppendo ∷ [SC (LVar (LCons Integer))]
 runAppendo = run $ do
                    q ← fresh
                    appendo q q (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))
