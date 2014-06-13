@@ -1,4 +1,4 @@
-module MicroKanren.Example where
+module Example where
 
 import MicroKanren
 

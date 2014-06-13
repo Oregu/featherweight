@@ -22,10 +22,6 @@ library
     MicroKanren.Monad
     MicroKanren.Mini
 
-  other-modules:
-    MicroKanren.Example
-    MicroKanren.ExampleMonadic
-
   build-depends:
     base >= 4 && < 5,
     mtl  >= 2.2

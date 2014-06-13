@@ -1,24 +1,24 @@
 module MicroKanren.Mini where
 
---import MicroKanren
+import Control.Monad
+import Control.Monad.State
 
-fresh ∷ a
-fresh = undefined
+import MicroKanren.Monad
 
-disjAll ∷ a
-disjAll = undefined
+conde ∷ [Logic α] → Logic α
+conde = msum
 
-conjAll ∷ a
-conjAll = undefined
+emptyS ∷ SC α
+emptyS = (mzero, 0)
 
-conde ∷ a
-conde = undefined
+run ∷ Logic α → [SC α]
+run l = map snd $ unFairList $ runStateT l emptyS
 
-run ∷ Int -> [a] -> [a]
-run = take
+runOnce ∷ Logic α -> [SC α]
+runOnce = take 1 . run
 
-runAll ∷ [a] -> [a]
-runAll = id
+runMany ∷ Int → Logic α -> [SC α]
+runMany n = take n . run
 
 reify ∷ a
 reify = undefined

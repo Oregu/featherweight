@@ -5,9 +5,7 @@ import Control.Monad.State.Lazy
 
 import MicroKanren (LVar(LVal), LCons(LCons, LCell, Nil))
 import MicroKanren.Monad
-
-emptyS ∷ SC α
-emptyS = (mzero, 0)
+import MicroKanren.Mini
 
 aANDb ∷ Logic (LVar Integer)
 aANDb = do
@@ -16,9 +14,6 @@ aANDb = do
     a === LVal 7
     mplus (b === LVal 5)
           (b === LVal 6)
-
-run ∷ Logic α → [SC α]
-run l = map snd $ unFairList $ runStateT l emptyS
 
 runEx1, runEx2 ∷ [SC (LVar Integer)]
 runEx1 = run $ do
