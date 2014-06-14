@@ -8,10 +8,6 @@ import MicroKanren (LVar(LVar), CanUnify, unify, fairMplus)
 
 newtype FairList α = FairList { unFairList :: [α] } deriving (Eq, Show, Functor, Applicative, Monad, Alternative)
 
---instance Monad FairList where
---  m >>= f = FairList $ concatMap (unFairList . f) (unFairList m)
---  return x = FairList [x]
-
 instance MonadPlus FairList where
   s1 `mplus` s2 = FairList $ unFairList s1 `fairMplus` unFairList s2
   mzero = FairList []

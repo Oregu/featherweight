@@ -9,17 +9,19 @@ import MicroKanren.Mini
 
 aANDb ∷ Logic (LVar Integer)
 aANDb = do
-    a ← fresh
-    b ← fresh
-    a === LVal 7
-    mplus (b === LVal 5)
-          (b === LVal 6)
+        a ← fresh
+        b ← fresh
+        a === LVal 7
+        mplus (b === LVal 5)
+              (b === LVal 6)
 
-runEx1, runEx2 ∷ [SC (LVar Integer)]
-runEx1 = run $ do
-    q ← fresh
-    q === (LVal 5 ∷ LVar Integer)
+runEx1, runEx2, runEx3 ∷ [SC (LVar Integer)]
+runEx1 = run $ fresh >>= (=== (LVal 5 ∷ LVar Integer))
 runEx2 = run aANDb
+runEx3 = run $ do
+               q ← fresh
+               q === LVal 5
+               LVal 6 === q
 
 fives, sixes ∷ LVar Integer → Logic (LVar Integer)
 fives x = mplus (x === LVal 5) (fives x)
