@@ -1,7 +1,7 @@
 module MicroKanren.Mini where
 
 import Control.Monad
-import Control.Monad.State
+import Control.Monad.Trans.State
 
 import MicroKanren.Monad
 
@@ -12,7 +12,7 @@ emptyS ∷ SC α
 emptyS = (mzero, 0)
 
 run ∷ Logic α → [SC α]
-run l = map snd $ unFairList $ runStateT l emptyS
+run l = unFairList $ execStateT l emptyS
 
 runOnce ∷ Logic α -> [SC α]
 runOnce = take 1 . run

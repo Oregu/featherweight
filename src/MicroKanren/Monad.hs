@@ -2,7 +2,7 @@ module MicroKanren.Monad where
 
 import Control.Applicative
 import Control.Monad
-import Control.Monad.State
+import Control.Monad.Trans.State
 
 import MicroKanren (LVar(LVar), CanUnify, unify, fairMplus)
 

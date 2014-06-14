@@ -1,7 +1,7 @@
 module MicroKanren.ExampleMonadic where
 
 import Control.Monad
-import Control.Monad.State.Lazy
+import Control.Monad.Trans.State
 
 import MicroKanren (LVar(LVal), LCons(LCons, LCell, Nil))
 import MicroKanren.Monad
