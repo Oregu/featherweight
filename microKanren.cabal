@@ -39,8 +39,10 @@ test-suite tests
   type:              exitcode-stdio-1.0
   main-is:           QC.hs
   hs-source-dirs:    tests
+  ghc-options:       -Wall -threaded
   extensions:        UnicodeSyntax
   build-depends:
+    microKanren,
     QuickCheck,
     base,
     test-framework,
