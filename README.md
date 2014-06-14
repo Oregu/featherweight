@@ -13,6 +13,6 @@ To do
 - [x] Logic as a state monad
 - [x] Tests
 - [ ] Use Map for substitutions
-- [ ] Finish Micro/Mini module with miniKanren things
+- [ ] Reification
 - [ ] Nominal
 - [ ] Benchmarks
