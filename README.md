@@ -13,6 +13,8 @@ To do
 - [x] Logic as a state monad
 - [x] Tests
 - [ ] Use Map for substitutions
-- [ ] Reification
+- [x] Reification
+- [ ] Classy reification
+- [ ] Polymorphic substitution map
 - [ ] Nominal
 - [ ] Benchmarks
