@@ -23,6 +23,10 @@ type SC    α = ([Subst α], Integer)
             maybe mzero (\s' → put (s', c)) $ unify u v s
             return u
 
+-- === Should return () actually, but Logic type tightens var type
+-- and a list of substitutions. I want substitutions to be polymorphic
+-- so I can remove LCell type constructor from LCons. (It's a temp hack.)
+
 fresh ∷ Logic (LVar α)
 fresh = do (_, cv) ← get
            modify $ \(s, c) → (s, c+1)
