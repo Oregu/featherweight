@@ -12,17 +12,17 @@ conde = msum
 emptyS ∷ SC α
 emptyS = (mzero, 0)
 
-run ∷ Logic α → [SC α]
-run l = unFairList $ execStateT l emptyS
+run ∷ Eq α ⇒ Logic (LVar α) → [LVar α]
+run l = reify $ unFairList $ runStateT l emptyS
 
-runOnce ∷ Logic α -> [SC α]
+runOnce ∷ Eq α ⇒ Logic (LVar α) -> [LVar α]
 runOnce = take 1 . run
 
-runMany ∷ Int → Logic α -> [SC α]
+runMany ∷ Eq α ⇒ Int → Logic (LVar α) -> [LVar α]
 runMany n = take n . run
 
-run' ∷ Logic α → [(α, SC α)]
-run' l = unFairList $ runStateT l emptyS
+run' ∷ Logic α → [SC α]
+run' l = unFairList $ execStateT l emptyS
 
 reify ∷ Eq α ⇒ [(LVar α, SC (LVar α))] → [LVar α]
 reify = map reifyVar

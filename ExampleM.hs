@@ -15,8 +15,8 @@ aANDb = do
         mplus (b === LVal 5)
               (b === LVal 6)
 
-runEx1, runEx2, runEx3 ∷ [SC (LVar Integer)]
-runEx1 = run $ fresh >>= (=== (LVal 5 ∷ LVar Integer))
+runEx1, runEx2, runEx3 ∷ [LVar Integer]
+runEx1 = run $ fresh >>= (=== LVal (5 ∷ Integer))
 runEx2 = run aANDb
 runEx3 = run $ do
                q ← fresh
@@ -27,7 +27,7 @@ fives, sixes ∷ LVar Integer → Logic (LVar Integer)
 fives x = mplus (x === LVal 5) (fives x)
 sixes x = mplus (x === LVal 6) (sixes x)
 
-runFives, run5and6 ∷ [SC (LVar Integer)]
+runFives, run5and6 ∷ [LVar Integer]
 runFives = run $ fresh >>= fives
 run5and6 = run $ do x ← fresh
                     fives x `mplus` sixes x
@@ -43,7 +43,7 @@ appendo l s out = mplus
         out === LVal (LCons h res)
         appendo t s res)
 
-runAppendo ∷ [SC (LVar (LCons Integer))]
+runAppendo ∷ [LVar (LCons Integer)]
 runAppendo = run $ do
                    q ← fresh
                    appendo q q (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))

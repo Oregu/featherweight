@@ -17,13 +17,19 @@ unifyWith a b = do q ← fresh
                    q === LVal a
                    LVal b === q
 
-test_unify    = [([(LVar 0, LVal 5)], 1)] @=? (run $ unifyWith 5 5)
-test_notUnify = [] @=? (run $ unifyWith 5 4)
+test_unify    = [([(LVar 0, LVal 5)], 1)] @=? (run' $ unifyWith 5 5)
+test_notUnify = [] @=? (run' $ unifyWith 5 4)
 
-test_reify    = [LVal 5, LVal 6] @=?
-                (reify $ run' $ do q ← fresh
-                                   conde [q === LVal 5
-                                         ,q === (LVal 6 ∷ LVar Integer)])
+test_reify      = [LVal 5, LVal 6] @=?
+                  (run $ do q ← fresh
+                            conde [q === LVal 5
+                                  ,q === LVal (6 ∷ Integer)])
+test_reify2vars = [LVal 5] @=?
+                  (run $ do q ← fresh
+                            t ← fresh
+                            q === LVal (5 ∷ Integer)
+                            q === t
+                            return t)
 
 main ∷ IO ()
 main = defaultMain tests
@@ -35,5 +41,6 @@ tests = [ testGroup "Unification"
           ]
         , testGroup "Reification"
           [ testCase "reify" test_reify
+          , testCase "reify two vars" test_reify2vars
           ]
         ]
