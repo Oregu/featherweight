@@ -14,7 +14,6 @@ To do
 - [x] Tests
 - [ ] Use Map for substitutions
 - [x] Reification
-- [ ] Classy reification
 - [ ] Membero example
 - [ ] Oleg's numbers
 - [ ] Polymorphic substitution map

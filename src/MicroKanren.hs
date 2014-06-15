@@ -46,7 +46,7 @@ unify u v s = unify' u' v' s
     unify' u2@(LVar _) v2@(LVar _) s2 = Just $ if u2 == v2 then s2
                                                            else extS u2 v2 s2
     unify' u2@(LVar _) v2          s2 = Just $ extS u2 v2 s2
-    unify' u2         v2@(LVar _)  s2 = Just $ extS v2 u2 s2
+    unify' u2          v2@(LVar _) s2 = Just $ extS v2 u2 s2
     unify' (LVal u2)   (LVal v2)   s2 =   unifyTerm u2 v2 s2
 
 (===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Goal α

@@ -24,12 +24,16 @@ runMany n = take n . run
 run' ∷ Logic α → [SC α]
 run' l = unFairList $ execStateT l emptyS
 
-reify ∷ Eq α ⇒ [(LVar α, SC (LVar α))] → [LVar α]
-reify = map reifyVar
-  where
-    reifyVar (lv@(LVal _), _) = lv
-    reifyVar (lv@(LVar vi), sc) =
-      let s = fst sc
-       in case (walk lv s) of
+class Eq α ⇒ CanReify α where
+  reifyVar ∷ α → SC α → α
+
+instance Eq α ⇒ CanReify (LVar α) where
+  reifyVar lv@(LVal _)   _ = lv
+  reifyVar lv@(LVar vi) sc =
+    let s = fst sc
+     in case (walk lv s) of
         LVal x → LVal x
-        LVar i → if (i == vi) then lv else reifyVar (LVar i, sc)
+        LVar i → if (i == vi) then lv else reifyVar (LVar i) sc
+
+reify ∷ CanReify α ⇒ [(α, SC α)] → [α]
+reify = map (uncurry reifyVar)
