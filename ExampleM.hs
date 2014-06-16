@@ -47,3 +47,13 @@ runAppendo ∷ [LVar (LCons Integer)]
 runAppendo = run $ do
                    q ← fresh
                    appendo q q (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))
+
+--membero ∷ Eq α ⇒ LVar (LCons α) → LVar (LCons α) → Logic (LVar (LCons α))
+--membero x l = conde
+--    [do t ← fresh
+--        x === LVal (LCons x t)
+--        return t
+--    ,do t ← fresh
+--        h ← fresh
+--        l === LVal (LCons h t)
+--        membero x t]
