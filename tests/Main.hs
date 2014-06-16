@@ -12,7 +12,7 @@ import MicroKanren (LVar(LVar, LVal))
 import MicroKanren.Monad
 import MicroKanren.Mini
 
-unifyWith ∷ Integer → Integer → Logic (LVar Integer)
+unifyWith ∷ Int → Int → Logic (LVar Int)
 unifyWith a b = do q ← fresh
                    q === LVal a
                    LVal b === q
@@ -23,11 +23,11 @@ test_notUnify = [] @=? (run' $ unifyWith 5 4)
 test_reify      = [LVal 5, LVal 6] @=?
                   (run $ do q ← fresh
                             conde [q === LVal 5
-                                  ,q === LVal (6 ∷ Integer)])
+                                  ,q === LVal (6 ∷ Int)])
 test_reify2vars = [LVal 5] @=?
                   (run $ do q ← fresh
                             t ← fresh
-                            q === LVal (5 ∷ Integer)
+                            q === LVal (5 ∷ Int)
                             q === t
                             return t)
 

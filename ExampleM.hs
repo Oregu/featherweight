@@ -7,7 +7,7 @@ import MicroKanren (LVar(LVal), LCons(LCons, LCell, Nil))
 import MicroKanren.Monad
 import MicroKanren.Mini
 
-aANDb ∷ Logic (LVar Integer)
+aANDb ∷ Logic (LVar Int)
 aANDb = do
         a ← fresh
         b ← fresh
@@ -15,19 +15,19 @@ aANDb = do
         mplus (b === LVal 5)
               (b === LVal 6)
 
-runEx1, runEx2, runEx3 ∷ [LVar Integer]
-runEx1 = run $ fresh >>= (=== LVal (5 ∷ Integer))
+runEx1, runEx2, runEx3 ∷ [LVar Int]
+runEx1 = run $ fresh >>= (=== LVal 5)
 runEx2 = run aANDb
 runEx3 = run $ do
                q ← fresh
                q === LVal 5
                LVal 6 === q
 
-fives, sixes ∷ LVar Integer → Logic (LVar Integer)
+fives, sixes ∷ LVar Int → Logic (LVar Int)
 fives x = mplus (x === LVal 5) (fives x)
 sixes x = mplus (x === LVal 6) (sixes x)
 
-runFives, run5and6 ∷ [LVar Integer]
+runFives, run5and6 ∷ [LVar Int]
 runFives = run $ fresh >>= fives
 run5and6 = run $ do x ← fresh
                     fives x `mplus` sixes x
@@ -43,7 +43,7 @@ appendo l s out = mplus
         out === LVal (LCons h res)
         appendo t s res)
 
-runAppendo ∷ [LVar (LCons Integer)]
+runAppendo ∷ [LVar (LCons Int)]
 runAppendo = run $ do
                    q ← fresh
                    appendo q q (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))

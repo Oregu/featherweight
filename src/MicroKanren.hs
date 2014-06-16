@@ -17,6 +17,7 @@ class Eq α ⇒ CanUnify α where
   unifyTerm ∷ α → α → [Subst α] → Maybe [Subst α]
   unifyTerm u v s = if u == v then Just s else Nothing
 
+instance CanUnify Int
 instance CanUnify Integer
 
 data LCons α = Nil
