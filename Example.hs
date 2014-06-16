@@ -24,29 +24,3 @@ run5and6 = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 
 runCons ∷ [SC (LCons Int)]
 runCons = callFresh (\x -> disj (x === LVal (LCons (LVal (LCell 2)) (LVal Nil))) (x === LVal Nil)) emptyS
-
-appendo ∷ Eq α ⇒ LVar (LCons α) → LVar (LCons α) → LVar (LCons α) → Goal (LCons α)
-appendo l s out =
-  disj
-    (conj (l === LVal Nil) (s === out))
-    (callFresh (\h →
-        callFresh (\t →
-          conj
-            (l === LVal (LCons h t))
-            (callFresh (\res →
-              conj
-                (out === LVal (LCons h res))
-                (appendo t s res))))))
-
-runAppendo ∷ [SC (LCons Int)]
-runAppendo = callFresh (\q →
-  appendo
-    q
-    (LVal (LCons (LVal (LCell 5)) (LVal Nil)))
-    (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 5)) (LVal Nil)))))) emptyS
-
-runAppendo2 ∷ [SC (LCons Int)]
-runAppendo2 = callFresh (\q →
-  appendo
-    q q
-    (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))) emptyS
