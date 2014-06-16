@@ -3,9 +3,8 @@ module MicroKanren.ExampleMonadic where
 import Control.Monad
 import Control.Monad.Trans.State
 
-import MicroKanren (LVar(LVal), LCons(LCons, LCell, Nil))
-import MicroKanren.Monad
-import MicroKanren.Mini
+import MicroKanren
+import MicroKanren.Plain (LVar(LVal), LCons(LCons, LCell, Nil))
 
 aANDb ∷ Logic (LVar Int)
 aANDb = do

@@ -8,9 +8,8 @@ import Test.Framework (Test)
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit
 
-import MicroKanren (LVar(LVar, LVal))
-import MicroKanren.Monad
-import MicroKanren.Mini
+import MicroKanren
+import MicroKanren.Plain (LVar(LVar, LVal))
 
 unifyWith ∷ Int → Int → Logic (LVar Int)
 unifyWith a b = do q ← fresh

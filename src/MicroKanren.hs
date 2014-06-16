@@ -1,63 +1,65 @@
 module MicroKanren where
 
+import Control.Applicative
 import Control.Monad
-import Data.List  (find)
+import Control.Monad.Trans.State
 
-data LVar a = LVar Integer | LVal a deriving (Eq)
+import MicroKanren.Plain (LVar(LVar, LVal), CanUnify, unify, fairMplus, walk)
 
-instance Show a ⇒ Show (LVar a) where
-  show (LVar i) = "_" ++ show i
-  show (LVal a) = show a
+newtype FairList α = FairList { unFairList :: [α] } deriving (Eq, Show, Functor, Applicative, Monad, Alternative)
 
-type Subst α = (LVar α, LVar α)
+instance MonadPlus FairList where
+  s1 `mplus` s2 = FairList $ unFairList s1 `fairMplus` unFairList s2
+  mzero = FairList []
+
+type Logic α = StateT (SC α) FairList α
+
+type Subst α = (α, α)
 type SC    α = ([Subst α], Integer)
-type Goal  α = SC α → [SC α]
 
-class Eq α ⇒ CanUnify α where
-  unifyTerm ∷ α → α → [Subst α] → Maybe [Subst α]
-  unifyTerm u v s = if u == v then Just s else Nothing
+(===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Logic (LVar α)
+(===) u v = do
+            (s, c) ← get
+            maybe mzero (\s' → put (s', c)) $ unify u v s
+            return u
 
-instance CanUnify Int
-instance CanUnify Integer
+-- === Should return () actually, but Logic type tightens var type
+-- and a list of substitutions. I want substitutions to be polymorphic
+-- so I can remove LCell type constructor from LCons. (It's a temp hack.)
 
-data LCons α = Nil
-             | LCell α
-             | LCons (LVar (LCons α)) (LVar (LCons α)) deriving (Eq, Show)
+fresh ∷ Logic (LVar α)
+fresh = do (_, cv) ← get
+           modify $ \(s, c) → (s, c+1)
+           return $ LVar cv
 
-instance (Eq α) ⇒ CanUnify (LCons α) where
-  unifyTerm (LCons u us) (LCons v vs) s = unify u v s >>= unify us vs
-  unifyTerm u v s = if u == v then Just s else Nothing
+conde ∷ [Logic α] → Logic α
+conde = msum
 
+emptyS ∷ SC α
+emptyS = (mzero, 0)
 
-fairMplus ∷ [α] → [α] → [α]
-fairMplus s1 s2 = if null s1 then s2 else head s1 : fairMplus s2 (tail s1)
+run ∷ Eq α ⇒ Logic (LVar α) → [LVar α]
+run l = reify $ unFairList $ runStateT l emptyS
 
-walk ∷ Eq α ⇒ LVar α → [Subst α] → LVar α
-walk u@(LVar _) s = maybe u (\pr' → walk (snd pr') s) (find (\v → u == fst v) s)
-walk u _ = u
+runOnce ∷ Eq α ⇒ Logic (LVar α) -> [LVar α]
+runOnce = take 1 . run
 
-extS ∷ LVar α → LVar α → [Subst α] → [Subst α]
-extS x v = (:) (x, v)
+runMany ∷ Eq α ⇒ Int → Logic (LVar α) -> [LVar α]
+runMany n = take n . run
 
-unify ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → [Subst α] → Maybe [Subst α]
-unify u v s = unify' u' v' s
-  where
-    u' = walk u s
-    v' = walk v s
-    unify' u2@(LVar _) v2@(LVar _) s2 = Just $ if u2 == v2 then s2
-                                                           else extS u2 v2 s2
-    unify' u2@(LVar _) v2          s2 = Just $ extS u2 v2 s2
-    unify' u2          v2@(LVar _) s2 = Just $ extS v2 u2 s2
-    unify' (LVal u2)   (LVal v2)   s2 =   unifyTerm u2 v2 s2
+run' ∷ Logic α → [SC α]
+run' l = unFairList $ execStateT l emptyS
 
-(===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Goal α
-(===) u v sc = maybe mzero (\s' → return (s', snd sc)) (unify u v (fst sc))
+class Eq α ⇒ CanReify α where
+  reifyVar ∷ α → SC α → α
 
-callFresh ∷ (LVar α → Goal β) → Goal β
-callFresh f sc = let c = snd sc in f (LVar c) (fst sc, c+1)
+instance Eq α ⇒ CanReify (LVar α) where
+  reifyVar lv@(LVal _)   _ = lv
+  reifyVar lv@(LVar vi) sc =
+    let s = fst sc
+     in case (walk lv s) of
+        LVal x → LVal x
+        LVar i → if (i == vi) then lv else reifyVar (LVar i) sc
 
-disj ∷ Goal α → Goal α → Goal α
-disj g1 g2 sc = fairMplus (g1 sc) (g2 sc)
-
-conj ∷ Goal α → Goal α → Goal α
-conj g1 g2 sc = g1 sc >>= g2
+reify ∷ CanReify α ⇒ [(α, SC α)] → [α]
+reify = map (uncurry reifyVar)

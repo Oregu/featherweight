@@ -13,7 +13,7 @@ To do
 - [x] Logic as a state monad
 - [x] Tests
 - [ ] Use Map for substitutions
-- [x] Reification
+- [ ] Reification (do not reifies for structs, like lcons)
 - [ ] Membero example
 - [ ] Oleg's numbers
 - [ ] Polymorphic substitution map

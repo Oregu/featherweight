@@ -1,6 +1,6 @@
 module Example where
 
-import MicroKanren
+import MicroKanren.Plain
 
 emptyS ∷ SC α
 emptyS = ([], 0)
