@@ -12,10 +12,14 @@ To do
 - [x] Need moar monads
 - [x] Logic as a state monad
 - [x] Tests
-- [ ] Use Map for substitutions
+- [x] Use Map for substitutions
+- [ ] Polymorphic substitutions
 - [ ] Reification (do not reifies for structs, like lcons)
-- [ ] Membero example
-- [ ] Oleg's numbers
-- [ ] Polymorphic substitution map
 - [ ] Nominal
 - [ ] Benchmarks
+
+Add examples
+------------
+- [ ] Membero
+- [ ] Oleg's numbers
+- [ ] Quines generator
