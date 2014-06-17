@@ -29,10 +29,13 @@ library
 
   build-depends:
     base          == 4.*,
-    transformers  >= 0.2
+    transformers  >= 0.2,
+    containers
 
   hs-source-dirs:    src
-  extensions:        UnicodeSyntax, GeneralizedNewtypeDeriving
+  extensions:        UnicodeSyntax,
+                     GeneralizedNewtypeDeriving,
+                     ExistentialQuantification
 
 test-suite tests
   type:              exitcode-stdio-1.0

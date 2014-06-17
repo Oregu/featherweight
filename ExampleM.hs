@@ -45,7 +45,7 @@ appendo l s out = mplus
 runAppendo ∷ [LVar (LCons Int)]
 runAppendo = run $ do
                    q ← fresh
-                   appendo q q (LVal (LCons (LVal (LCell 1)) (LVal (LCons (LVal (LCell 1)) (LVal Nil)))))
+                   appendo q q (LVal (LCons (LVal 1) (LVal (LCons (LVal 1) (LVal Nil)))))
 
 --membero ∷ Eq α ⇒ LVar (LCons α) → LVar (LCons α) → Logic (LVar (LCons α))
 --membero x l = conde
