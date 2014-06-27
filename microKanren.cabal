@@ -34,8 +34,7 @@ library
 
   hs-source-dirs:    src
   extensions:        UnicodeSyntax,
-                     GeneralizedNewtypeDeriving,
-                     ExistentialQuantification
+                     GeneralizedNewtypeDeriving
 
 test-suite tests
   type:              exitcode-stdio-1.0

@@ -1,30 +1,30 @@
 module MicroKanren.Plain where
 
 import Control.Monad
-import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.List (find)
 
-data LVar a = LVar Integer | LVal a deriving (Eq)
+data LVar α = LVar Integer | LVal α deriving (Eq)
 
-instance Show a ⇒ Show (LVar a) where
+instance Show α ⇒ Show (LVar α) where
   show (LVar i) = "_" ++ show i
   show (LVal a) = show a
 
-data Subst = forall α. CanUnify α ⇒ Subst (Map (LVar α) (LVar α))
-type SC    = (Subst, Integer)
-type Goal  = SC → [SC]
+type Subst α = (LVar α, LVar α)
+type SC    α = ([Subst α], Integer)
+type Goal  α = SC α → [SC α]
 
 class Eq α ⇒ CanUnify α where
-  unifyTerm ∷ α → α → Subst → Maybe Subst
+  unifyTerm ∷ α → α → [Subst α] → Maybe [Subst α]
   unifyTerm u v s = if u == v then Just s else Nothing
 
 instance CanUnify Int
 instance CanUnify Integer
 
 data LCons α = Nil
-             | LCons (LVar α) (LVar (LCons α)) deriving (Eq, Show)
+             | LCell α
+             | LCons (LVar (LCons α)) (LVar (LCons α)) deriving (Eq, Show)
 
-instance (Eq α, CanUnify α) ⇒ CanUnify (LCons α) where
+instance CanUnify α ⇒ CanUnify (LCons α) where
   unifyTerm (LCons u us) (LCons v vs) s = unify u v s >>= unify us vs
   unifyTerm u v s = if u == v then Just s else Nothing
 
@@ -32,14 +32,14 @@ instance (Eq α, CanUnify α) ⇒ CanUnify (LCons α) where
 fairMplus ∷ [α] → [α] → [α]
 fairMplus s1 s2 = if null s1 then s2 else head s1 : fairMplus s2 (tail s1)
 
-walk ∷ (Eq α, CanUnify α) ⇒ LVar α → Subst → LVar α
-walk u@(LVar _) (Subst s) = maybe u (\v → walk v (Subst s)) $ Map.lookup u s
+walk ∷ Eq α ⇒ LVar α → [Subst α] → LVar α
+walk u@(LVar _) s = maybe u (\v → walk (snd v) s) $ find (\v → u == fst v) s
 walk u _ = u
 
-extS ∷ CanUnify α ⇒ LVar α → LVar α → Subst → Subst
-extS x v (Subst s) = Subst $ Map.insert x v s
+extS ∷ LVar α → LVar α → [Subst α] → [Subst α]
+extS x v s = (x, v) : s
 
-unify ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → Subst → Maybe Subst
+unify ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → [Subst α] → Maybe [Subst α]
 unify u v s = unify' u' v' s
   where
     u' = walk u s
@@ -50,14 +50,14 @@ unify u v s = unify' u' v' s
     unify' u2          v2@(LVar _) s2 = Just $ extS v2 u2 s2
     unify' (LVal u2)   (LVal v2)   s2 =   unifyTerm u2 v2 s2
 
-(===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → SC → [SC]
+(===) ∷ (Eq α, CanUnify α) ⇒ LVar α → LVar α → SC α → [SC α]
 (===) u v sc = maybe mzero (\s' → return (s', snd sc)) (unify u v (fst sc))
 
-callFresh ∷ (LVar α → Goal) → Goal
+callFresh ∷ (LVar α → Goal α) → Goal α
 callFresh f sc = let c = snd sc in f (LVar c) (fst sc, c+1)
 
-disj ∷ Goal → Goal → Goal
+disj ∷ Goal α → Goal α → Goal α
 disj g1 g2 sc = fairMplus (g1 sc) (g2 sc)
 
-conj ∷ Goal → Goal → Goal
+conj ∷ Goal α → Goal α → Goal α
 conj g1 g2 sc = g1 sc >>= g2
