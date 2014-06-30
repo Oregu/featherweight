@@ -6,6 +6,10 @@ Haskell implementation of Jason Hemann ([@jasonhemann](https://github.com/jasonh
 
 Original Scheme implementation: https://github.com/jasonhemann/microKanren
 
+In action
+---------
+See [Example](https://github.com/Oregu/featherweight/blob/master/Example.hs) and [ExampleM](https://github.com/Oregu/featherweight/blob/master/ExampleM.hs) files.
+
 To do
 -----
 - [x] Implement appendo, custom unify
