@@ -9,7 +9,8 @@ Original Scheme implementation: https://github.com/jasonhemann/microKanren
 In action
 ---------
 ```haskell
-appendo l s out = mplus
+appendo l s out =
+  mplus
     (do l === LVal empty
         s === out)
     (do h ← fresh
