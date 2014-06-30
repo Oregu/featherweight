@@ -8,6 +8,17 @@ Original Scheme implementation: https://github.com/jasonhemann/microKanren
 
 In action
 ---------
+```haskell
+appendo l s out = mplus
+    (do l === LVal empty
+        s === out)
+    (do h ← fresh
+        t ← fresh
+        l === LVal (cons h t)
+        res ← fresh
+        out === LVal (cons h res)
+        appendo t s res)
+```
 See [Example](https://github.com/Oregu/featherweight/blob/master/Example.hs) and [ExampleM](https://github.com/Oregu/featherweight/blob/master/ExampleM.hs) files.
 
 To do
