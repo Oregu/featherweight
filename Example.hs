@@ -1,6 +1,7 @@
 module Example where
 
 import MicroKanren.Plain
+import MicroKanren.Cons
 
 emptyS ∷ SC α
 emptyS = ([], 0)
@@ -23,4 +24,6 @@ runFives = callFresh fives emptyS
 run5and6 = callFresh (\x -> disj (fives x) (sixes x)) emptyS
 
 runCons ∷ [SC (LCons Int)]
-runCons = callFresh (\x -> disj (x === LVal (LCons (LVal (LCell 2)) (LVal Nil))) (x === LVal Nil)) emptyS
+runCons = callFresh
+            (\x -> disj (x === LVal (fromList [2])) (x === LVal empty))
+            emptyS

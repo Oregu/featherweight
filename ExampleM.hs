@@ -4,7 +4,8 @@ import Control.Monad
 import Control.Monad.Trans.State
 
 import MicroKanren
-import MicroKanren.Plain (LVar(..), LCons(..), CanUnify)
+import MicroKanren.Plain (LVar(..), CanUnify)
+import MicroKanren.Cons
 
 aANDb ∷ Logic (LVar Int)
 aANDb = do
@@ -33,19 +34,19 @@ run5and6 = run $ do x ← fresh
 
 appendo ∷ (CanUnify α, Eq α) ⇒ LVar (LCons α) → LVar (LCons α) → LVar (LCons α) → Logic (LVar (LCons α))
 appendo l s out = mplus
-    (do l === LVal Nil
+    (do l === LVal empty
         s === out)
     (do h ← fresh
         t ← fresh
-        l === LVal (LCons h t)
+        l === LVal (cons h t)
         res ← fresh
-        out === LVal (LCons h res)
+        out === LVal (cons h res)
         appendo t s res)
 
 runAppendo ∷ [LVar (LCons Int)]
 runAppendo = run $ do
                    q ← fresh
-                   appendo q q (LVal (LCons (LVal (LCell (1 ∷ Int))) (LVal (LCons (LVal (LCell (1 ∷ Int))) (LVal Nil)))))
+                   appendo q q (LVal $ fromList [1, 1])
 
 --membero ∷ Eq α ⇒ LVar (LCons α) → LVar (LCons α) → Logic (LVar (LCons α))
 --membero x l = conde

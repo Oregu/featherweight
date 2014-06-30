@@ -20,14 +20,6 @@ class Eq α ⇒ CanUnify α where
 instance CanUnify Int
 instance CanUnify Integer
 
-data LCons α = Nil
-             | LCell α
-             | LCons (LVar (LCons α)) (LVar (LCons α)) deriving (Eq, Show)
-
-instance CanUnify α ⇒ CanUnify (LCons α) where
-  unifyTerm (LCons u us) (LCons v vs) s = unify u v s >>= unify us vs
-  unifyTerm u v s = if u == v then Just s else Nothing
-
 
 fairMplus ∷ [α] → [α] → [α]
 fairMplus s1 s2 = if null s1 then s2 else head s1 : fairMplus s2 (tail s1)

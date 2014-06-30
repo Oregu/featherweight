@@ -26,6 +26,7 @@ library
   exposed-modules:
     MicroKanren
     MicroKanren.Plain
+    MicroKanren.Cons
 
   build-depends:
     base          == 4.*,
