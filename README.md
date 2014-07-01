@@ -27,7 +27,7 @@ To do
 - [x] Implement appendo, custom unify
 - [x] Logic as a state monad
 - [x] Tests
-- [x] Use Map for substitutions
+- [ ] Use Map for substitutions
 - [ ] Polymorphic substitutions
 - [ ] Reification (do not reifies for structs, like lcons)
 - [ ] Nominal
