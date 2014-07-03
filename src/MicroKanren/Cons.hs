@@ -6,6 +6,7 @@ module MicroKanren.Cons (
 , cons
 ) where
 
+import MicroKanren (CanReify, reifyVar)
 import MicroKanren.Plain (LVar(..), CanUnify, unify, unifyTerm)
 
 data LCons α = Nil
@@ -15,6 +16,11 @@ data LCons α = Nil
 instance CanUnify α ⇒ CanUnify (LCons α) where
   unifyTerm (LCons u us) (LCons v vs) s = unify u v s >>= unify us vs
   unifyTerm u v s = if u == v then Just s else Nothing
+
+instance CanReify α ⇒ CanReify (LCons α) where
+  reifyVar  Nil         sc = Nil
+  reifyVar (LCell a)    sc = LCell a
+  reifyVar (LCons a as) sc = LCons a as-- (reifyVar a sc) (reifyVar as sc)
 
 fromList ∷ [α] → LCons α
 fromList []     = Nil
